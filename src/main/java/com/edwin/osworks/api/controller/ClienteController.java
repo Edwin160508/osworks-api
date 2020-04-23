@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.edwin.osworks.domain.model.Cliente;
 import com.edwin.osworks.domain.repository.ClienteRepository;
+import com.edwin.osworks.domain.service.CadastroClienteService;
 
 @RestController
 @RequestMapping("/clientes")
@@ -27,6 +28,9 @@ public class ClienteController {
 	
 	@Autowired
 	private ClienteRepository clienteRepository;
+	
+	@Autowired
+	private CadastroClienteService cadastroClienteService;
 	
 	@GetMapping
 	public List<Cliente> listar() {
@@ -45,7 +49,7 @@ public class ClienteController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public Cliente cadastrar(@Valid @RequestBody Cliente cliente) {
-		return clienteRepository.save(cliente);
+		return cadastroClienteService.salvar(cliente);
 	}
 	
 	@PutMapping("/{clienteId}")
@@ -56,7 +60,7 @@ public class ClienteController {
 		}
 		
 		cliente.setId(clienteId);
-		cliente = clienteRepository.save(cliente);
+		cliente = cadastroClienteService.salvar(cliente);
 		
 		return ResponseEntity.ok(cliente);
 	}
@@ -66,7 +70,7 @@ public class ClienteController {
 		if(!clienteRepository.existsById(clienteId)) {
 			return ResponseEntity.notFound().build();
 		}
-		clienteRepository.deleteById(clienteId);
+		cadastroClienteService.remover(clienteId);
 		return ResponseEntity.noContent().build();
 	}
 }
